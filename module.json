@@ -1,0 +1,41 @@
+{
+  "id": "crossgate",
+  "title": "CrossGate",
+  "description": "Sistema avançado de spawning de tokens, mutações e seleção visual para Foundry VTT.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Seu Nome",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "scripts/crossgate.js"
+  ],
+  "styles": [
+    "styles/crossgate.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "MIT",
+  "readme": "README.md",
+  "bugs": "",
+  "changelog": ""
+}

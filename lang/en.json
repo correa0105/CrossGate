@@ -1,0 +1,17 @@
+{
+  "CROSSGATE": {
+    "error": {
+      "noToken": "No token specified",
+      "invalidLocation": "Invalid location",
+      "noActor": "No actor found",
+      "spawnFailed": "Failed to spawn token",
+      "mutationFailed": "Failed to apply mutation",
+      "cancelled": "Operation cancelled"
+    },
+    "crosshairs": {
+      "confirm": "Confirm Location",
+      "cancel": "Cancel",
+      "range": "Range"
+    }
+  }
+}
