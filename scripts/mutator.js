@@ -114,15 +114,25 @@ export class Mutator {
   }
 
   /**
-   * Get the token from the target
+   * Get the token(s) from the target
    */
   static _getToken(target) {
-    if (target instanceof Token || target instanceof TokenDocument) {
+    // If it's already a TokenDocument, return it
+    if (target instanceof TokenDocument) {
       return target;
     }
-    if (target instanceof Actor) {
-      return target.getActiveTokens()[0]?.document;
+
+    // If it's a Token object (from canvas), get its document
+    if (target?.document instanceof TokenDocument) {
+      return target.document;
     }
+
+    // If it's an Actor, get the first active token's document
+    if (target instanceof Actor) {
+      const activeTokens = target.getActiveTokens();
+      return activeTokens[0]?.document || null;
+    }
+
     return null;
   }
 
@@ -149,6 +159,14 @@ export class Mutator {
         // Assume it's an actor update
         prepared.actor[key] = value;
       }
+    }
+
+    // Convert 'scale' to 'texture.scaleX' and 'texture.scaleY' for compatibility
+    if (prepared.token.scale !== undefined) {
+      const scaleValue = prepared.token.scale;
+      prepared.token['texture.scaleX'] = scaleValue;
+      prepared.token['texture.scaleY'] = scaleValue;
+      delete prepared.token.scale;
     }
 
     return prepared;
@@ -197,13 +215,25 @@ export class Mutator {
   static async _applyUpdates(actor, token, updates, updateOpts = {}) {
     const promises = [];
 
+    // Debug logging
+    const debug = game.settings.get('crossgate', 'debug');
+    if (debug) {
+      console.log('CrossGate | Applying updates:', {
+        actor: actor.name,
+        token: token,
+        updates: updates
+      });
+    }
+
     // Update actor
-    if (Object.keys(updates.actor).length > 0) {
+    if (updates.actor && Object.keys(updates.actor).length > 0) {
+      if (debug) console.log('CrossGate | Updating actor:', updates.actor);
       promises.push(actor.update(updates.actor, updateOpts));
     }
 
     // Update token
-    if (token && Object.keys(updates.token).length > 0) {
+    if (token && updates.token && Object.keys(updates.token).length > 0) {
+      if (debug) console.log('CrossGate | Updating token:', updates.token);
       promises.push(token.update(updates.token, updateOpts));
     }
 
