@@ -145,11 +145,7 @@ class CrossGate {
    * @returns {Promise<Object>} Selected position {x, y, cancelled}
    *
    * @example
-   * const location = await crossgate.crosshairs.show({
-   *   size: 2,
-   *   label: "Select a location",
-   *   range: 30
-   * });
+   * const location = await crossgate.crosshairs.show();
    * if (!location.cancelled) {
    *   console.log("Selected:", location.x, location.y);
    * }

@@ -65,10 +65,7 @@ Run this macro to test the module:
 
 ```javascript
 async function basicTest() {
-  const location = await crossgate.crosshairs.show({
-    size: 1,
-    label: "CrossGate Test"
-  });
+  const location = await crossgate.crosshairs.show();
 
   if (!location.cancelled) {
     ui.notifications.info("CrossGate working! ✅");
@@ -80,7 +77,7 @@ basicTest();
 ```
 
 **What should happen:**
-1. A blue circle appears on the map
+1. A smoke effect appears around your cursor
 2. Click to confirm the position
 3. "CrossGate working!" message appears
 

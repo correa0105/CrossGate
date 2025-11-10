@@ -146,10 +146,18 @@ export class Mutator {
       embedded: {}
     };
 
+    // Debug logging
+    const debug = game.settings.get('crossgate', 'debug');
+    if (debug) {
+      console.log('CrossGate | Raw updates received:', updates);
+    }
+
     // Separate updates by type
     for (const [key, value] of Object.entries(updates)) {
       if (key === 'token') {
         prepared.token = value;
+      } else if (key === 'actor') {
+        prepared.actor = value;
       } else if (key === 'embedded') {
         prepared.embedded = value;
       } else if (key === 'actorData') {
@@ -167,6 +175,10 @@ export class Mutator {
       prepared.token['texture.scaleX'] = scaleValue;
       prepared.token['texture.scaleY'] = scaleValue;
       delete prepared.token.scale;
+    }
+
+    if (debug) {
+      console.log('CrossGate | Prepared updates:', prepared);
     }
 
     return prepared;
@@ -219,22 +231,35 @@ export class Mutator {
     const debug = game.settings.get('crossgate', 'debug');
     if (debug) {
       console.log('CrossGate | Applying updates:', {
-        actor: actor.name,
-        token: token,
+        actorName: actor.name,
+        actorId: actor.id,
+        tokenId: token?.id,
         updates: updates
       });
     }
 
     // Update actor
     if (updates.actor && Object.keys(updates.actor).length > 0) {
-      if (debug) console.log('CrossGate | Updating actor:', updates.actor);
-      promises.push(actor.update(updates.actor, updateOpts));
+      if (debug) console.log('CrossGate | Updating actor with:', updates.actor);
+      try {
+        const result = await actor.update(updates.actor, updateOpts);
+        if (debug) console.log('CrossGate | Actor update result:', result);
+      } catch (error) {
+        console.error('CrossGate | Error updating actor:', error);
+        ui.notifications.error(`Failed to update actor: ${error.message}`);
+      }
     }
 
     // Update token
     if (token && updates.token && Object.keys(updates.token).length > 0) {
-      if (debug) console.log('CrossGate | Updating token:', updates.token);
-      promises.push(token.update(updates.token, updateOpts));
+      if (debug) console.log('CrossGate | Updating token with:', updates.token);
+      try {
+        const result = await token.update(updates.token, updateOpts);
+        if (debug) console.log('CrossGate | Token update result:', result);
+      } catch (error) {
+        console.error('CrossGate | Error updating token:', error);
+        ui.notifications.error(`Failed to update token: ${error.message}`);
+      }
     }
 
     // Update embedded documents

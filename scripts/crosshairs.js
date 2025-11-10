@@ -6,25 +6,13 @@
 export class Crosshairs {
   constructor(config = {}) {
     this.config = foundry.utils.mergeObject({
-      size: 1,
-      icon: 'icons/svg/target.svg',
-      label: '',
-      tag: 'crosshairs',
-      drawIcon: true,
-      drawOutline: true,
-      interval: -1,
-      fillAlpha: 0,
-      tileTexture: false,
-      lockSize: true,
       lockPosition: false,
-      rememberControlled: false,
-      range: -1,
-      classList: ['crossgate-crosshairs']
+      rememberControlled: false
     }, config);
 
     this.cancelled = false;
     this.position = null;
-    this.template = null;
+    this.cursorEffect = null;
     this.controlled = [];
   }
 
@@ -66,36 +54,22 @@ export class Crosshairs {
   }
 
   _createTemplate() {
-    const templateData = {
-      t: 'circle',
-      user: game.user.id,
-      distance: this.config.size,
-      direction: 0,
-      x: 0,
-      y: 0,
-      fillColor: game.user.color,
-      flags: {
-        crossgate: {
-          crosshairs: true
-        }
-      }
-    };
-
-    const cls = CONFIG.MeasuredTemplate.documentClass;
-    const template = new cls(templateData, { parent: canvas.scene });
-    this.template = new CONFIG.MeasuredTemplate.objectClass(template);
-    this.template.draw();
-    this.template.layer.addChild(this.template);
+    // Criar elemento HTML para seguir o cursor
+    this.cursorEffect = document.createElement('div');
+    this.cursorEffect.className = 'crossgate-cursor-effect';
+    document.body.appendChild(this.cursorEffect);
   }
 
   _onMouseMove(event) {
     const position = this._getMousePosition(event);
     if (!position) return;
 
-    // Update template position
-    if (this.template) {
-      this.template.document.updateSource({ x: position.x, y: position.y });
-      this.template.renderFlags.set({ refresh: true });
+    // Update cursor effect position
+    if (this.cursorEffect) {
+      // Converter para coordenadas da tela
+      const screenPos = canvas.stage.toGlobal(new PIXI.Point(position.x, position.y));
+      this.cursorEffect.style.left = screenPos.x + 'px';
+      this.cursorEffect.style.top = screenPos.y + 'px';
     }
   }
 
@@ -118,10 +92,10 @@ export class Crosshairs {
     canvas.stage.off('pointerdown', clickHandler);
     canvas.stage.off('rightdown', rightClickHandler);
 
-    // Remove template
-    if (this.template) {
-      this.template.destroy();
-      this.template = null;
+    // Remove cursor effect
+    if (this.cursorEffect) {
+      this.cursorEffect.remove();
+      this.cursorEffect = null;
     }
 
     // Restore controlled tokens

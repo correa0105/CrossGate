@@ -22,7 +22,7 @@ CrossGate is a complete module for Foundry VTT that provides powerful features f
 await crossgate.spawn("Goblin");
 
 // Spawn with position selection
-const location = await crossgate.crosshairs.show({ size: 1, label: "Summon location" });
+const location = await crossgate.crosshairs.show();
 await crossgate.spawn("Goblin", { x: location.x, y: location.y });
 
 // Apply transformation
@@ -307,7 +307,7 @@ if (crossgate.hasMutation(token.actor, mutationName)) {
 
 ### **4. crossgate.crosshairs.show()**
 
-Displays visual selection interface.
+Displays visual selection interface with cursor effect.
 
 #### **Syntax:**
 ```javascript
@@ -315,13 +315,8 @@ crossgate.crosshairs.show(config)
 ```
 
 #### **Parameters:**
-- `config` (object) - Configuration
-  - `size` - Size in grid units (default: 1)
-  - `label` - Text to display
-  - `icon` - Icon to show
-  - `range` - Maximum range (-1 = unlimited)
-  - `fillAlpha` - Fill transparency (0-1)
-  - `rememberControlled` - Restore token selection after
+- `config` (object) - Configuration (optional)
+  - `rememberControlled` - Restore token selection after (default: false)
 
 #### **Returns:** `Promise<{x, y, cancelled}>`
 
@@ -329,39 +324,16 @@ crossgate.crosshairs.show(config)
 
 **Basic crosshairs:**
 ```javascript
-const location = await crossgate.crosshairs.show({
-  size: 1,
-  label: "Select location"
-});
+const location = await crossgate.crosshairs.show();
 
 if (!location.cancelled) {
   console.log("Selected:", location.x, location.y);
 }
 ```
 
-**Large area selection:**
-```javascript
-const location = await crossgate.crosshairs.show({
-  size: 5,
-  label: "Fireball area"
-});
-```
-
-**With range limit:**
-```javascript
-const location = await crossgate.crosshairs.show({
-  size: 2,
-  label: "Summon (30ft range)",
-  range: 30
-});
-```
-
 **Spawn with crosshairs:**
 ```javascript
-const location = await crossgate.crosshairs.show({
-  size: 1,
-  label: "Summon Wolf"
-});
+const location = await crossgate.crosshairs.show();
 
 if (!location.cancelled) {
   await crossgate.spawn("Wolf", {
