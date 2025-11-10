@@ -15,7 +15,7 @@ export class Mutator {
   static async mutate(target, updates = {}, callbacks = {}, options = {}) {
     // Merge default options
     options = foundry.utils.mergeObject({
-      name: randomID(),
+      name: foundry.utils.randomID(),
       permanent: false,
       description: '',
       comparisonKeys: {},
